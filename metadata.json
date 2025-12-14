@@ -1,0 +1,7 @@
+{
+  "name": "ForensicTrack",
+  "description": "A forensic link tracking tool for generating consent-based traceability reports with IP and Geolocation data.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
