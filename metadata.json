@@ -4,7 +4,6 @@
   "description": "Rastreador de Links para Monitoramento de Entregas do Mercado Livre.",
   "icons": [
     // Seus ícones originais devem estar aqui.
-    // Exemplo de como eles devem parecer (mantenha os que você já tem):
     {
       "src": "/vite.svg",
       "sizes": "512x512",
@@ -12,6 +11,7 @@
       "purpose": "any"
     }
   ],
+  "start_url": ".", // <--- ESTE CAMPO ESTAVA FALTANDO!
   "theme_color": "#000000",
   "background_color": "#ffffff",
   "display": "standalone"
