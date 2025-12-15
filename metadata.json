@@ -1,7 +1,18 @@
 {
-  "name": "ForensicTrack",
-  "description": "A forensic link tracking tool for generating consent-based traceability reports with IP and Geolocation data.",
-  "requestFramePermissions": [
-    "geolocation"
-  ]
+  "name": "Monitoramento Entregas Mercado Livre",
+  "short_name": "Entregas ML",
+  "description": "Rastreador de Links para Monitoramento de Entregas do Mercado Livre.",
+  "icons": [
+    // Seus ícones originais devem estar aqui.
+    // Exemplo de como eles devem parecer (mantenha os que você já tem):
+    {
+      "src": "/vite.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "display": "standalone"
 }
