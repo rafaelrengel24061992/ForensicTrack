@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import '../index.css'; // Deixe este caminho // <--- ESTA LINHA IMPORTA SEUS ESTILOS (TAILWIND CSS)
+import '../index.css'; // <-- Caminho correto: "Sobe" para a raiz para achar o index.css
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
