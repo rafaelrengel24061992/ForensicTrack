@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0", // <-- DEVE TER VÍRGULA!
-    "react-router-dom": "^6.22.1" // <-- SEM VÍRGULA NO ÚLTIMO ITEM DA LISTA!
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.56",
