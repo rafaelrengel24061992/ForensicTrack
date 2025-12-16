@@ -1,31 +1,32 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
-// --- CONFIGURAÇÃO DO FIREBASE (ATUALIZADO COM SUAS CHAVES REAIS) ---
-// O código usa as variáveis de ambiente (process.env) como primeira opção,
-// e usa as chaves reais como fallback, garantindo a conexão.
+// --- CONFIGURAÇÃO DO FIREBASE (VERSÃO SEGURA) ---
+// Agora, ele depende EXCLUSIVAMENTE das variáveis de ambiente injetadas pelo Vercel.
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY || "AIzaSyB2qmx_HM8t-U7ZsDeo5_o0GMaT23Od8e4", // CHAVE REAL
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN || "forensictrack-1f3ef.firebaseapp.com", // DOMÍNIO REAL
-  projectId: process.env.FIREBASE_PROJECT_ID || "forensictrack-1f3ef", // ID DO PROJETO REAL
-  storageBucket: "forensictrack-1f3ef.firebasestorage.app", // BUCKET REAL
-  messagingSenderId: "201038584400", // SENDER ID REAL
-  appId: "1:201038584400:web:9e4b125a72e000934e0f55" // APP ID REAL
+  apiKey: import.meta.env.FIREBASE_API_KEY,
+  authDomain: import.meta.env.FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.FIREBASE_APP_ID,
 };
 
 let db: any = null;
 
-// Só inicializa se tiver configuração válida (o valor da chave não for o placeholder antigo)
-if (firebaseConfig.apiKey !== "SUA_API_KEY_AQUI") {
-  try {
-    const app = initializeApp(firebaseConfig as any);
-    db = getFirestore(app);
-    console.log("Firebase conectado com sucesso.");
-  } catch (e) {
-    console.error("Erro ao conectar Firebase:", e);
-  }
+// Só inicializa se a chave principal existir (agora injetada pelo Vercel)
+if (firebaseConfig.apiKey) {
+  try {
+    // Usando `import.meta.env` para ser compatível com o sistema de variáveis de ambiente do Vite
+    const app = initializeApp(firebaseConfig as any);
+    db = getFirestore(app);
+    console.log("Firebase conectado com sucesso.");
+  } catch (e) {
+    console.error("Erro ao conectar Firebase:", e);
+  }
 } else {
-  console.log("Firebase não configurado. Usando LocalStorage (Modo Demo).");
+  // Isso será exibido no console se as variáveis não forem encontradas (o que não deve acontecer após o Passo 1)
+  console.log("Firebase não configurado. Verifique as Variáveis de Ambiente.");
 }
 
 export { db };
