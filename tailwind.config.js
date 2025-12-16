@@ -1,10 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  // O CAMPO 'CONTENT' DIZ AO TAILWIND ONDE PROCURAR AS SUAS CLASSES
+  // O CONTENT AGORA FOCA SOMENTE NA PASTA 'SRC'
   content: [
-    "./index.html",
-    // Esta linha aponta para TUDO DENTRO da sua pasta 'src'
-    // (onde agora estão o App.tsx, pages, components, etc.)
+    // Se o index.html não tem classes Tailwind diretamente, pode ser removido
+    // Deixe apenas a linha que aponta para o código-fonte:
     "./src/**/*.{js,ts,jsx,tsx}", 
   ],
   theme: {
