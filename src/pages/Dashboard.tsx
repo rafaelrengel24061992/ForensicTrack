@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Folder, Clock, ChevronRight, Loader2, Cloud, CloudOff } from 'lucide-react';
+import { Plus, Folder, Clock, ChevronRight, Loader2, Cloud, CloudOff, LogOut } from 'lucide-react';
 import { Case } from '../types';
 import { getCases } from '../services/storageService';
 import { db } from '../services/firebase';
+import { logout } from '../services/authService'; // Importação do serviço de logout
 
 export const Dashboard: React.FC = () => {
   const [cases, setCases] = useState<Case[]>([]);
@@ -19,29 +20,53 @@ export const Dashboard: React.FC = () => {
     loadCases();
   }, []);
 
+  const handleLogout = async () => {
+    if (window.confirm("Deseja realmente sair do sistema?")) {
+      try {
+        await logout();
+      } catch (error) {
+        console.error("Erro ao deslogar:", error);
+      }
+    }
+  };
+
   return (
     <div className="p-4 space-y-6 max-w-3xl mx-auto">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold text-slate-800">Seus Procedimentos</h2>
-        <div className="flex items-center gap-3">
+      {/* HEADER COM STATUS E LOGOUT */}
+      <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+        <div>
+          <h2 className="text-xl font-bold text-slate-800">Seus Procedimentos</h2>
+          <div className="flex items-center gap-2 mt-1">
             {db ? (
-                <span className="text-xs flex items-center gap-1 text-green-600 bg-green-100 px-2 py-1 rounded-full">
-                    <Cloud className="w-3 h-3" /> Online
-                </span>
+              <span className="text-[10px] uppercase tracking-wider flex items-center gap-1 text-green-600 bg-green-50 px-2 py-0.5 rounded-md font-bold border border-green-100">
+                <Cloud className="w-3 h-3" /> Online
+              </span>
             ) : (
-                <span className="text-xs flex items-center gap-1 text-orange-600 bg-orange-100 px-2 py-1 rounded-full">
-                    <CloudOff className="w-3 h-3" /> Local (Demo)
-                </span>
+              <span className="text-[10px] uppercase tracking-wider flex items-center gap-1 text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md font-bold border border-orange-100">
+                <CloudOff className="w-3 h-3" /> Local (Demo)
+              </span>
             )}
-            <Link to="/create" className="bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition">
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-slate-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-all"
+            title="Sair do Sistema"
+          >
+            <LogOut className="w-5 h-5" />
+          </button>
+          
+          <Link to="/create" className="bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-transform active:scale-95">
             <Plus className="w-6 h-6" />
-            </Link>
+          </Link>
         </div>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+          <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
         </div>
       ) : cases.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-slate-100">
@@ -79,7 +104,7 @@ export const Dashboard: React.FC = () => {
               <div className="mt-4 flex items-center gap-4 text-sm text-slate-500">
                 <div className="flex items-center gap-1">
                   <Clock className="w-4 h-4" />
-                  <span>{c.logs.length} acessos</span>
+                  <span>{c.logs?.length || 0} acessos</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <span className={`w-2 h-2 rounded-full ${c.status === 'active' ? 'bg-green-500' : 'bg-gray-400'}`} />
