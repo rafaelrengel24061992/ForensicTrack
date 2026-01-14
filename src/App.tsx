@@ -1,37 +1,50 @@
-import React from 'react';
-import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { Header } from './components/Header';
-import { Dashboard } from './pages/Dashboard';
-import { CreateCase } from './pages/CreateCase';
+import React, { useEffect, useState } from 'react';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth } from './services/authService';
+
+// Suas páginas
+import { Dashboard } from './pages/Dashboard'; // Verifique se o nome é esse ou 'Home'
 import { CaseDetail } from './pages/CaseDetail';
-import { TrackingView } from './pages/TrackingView';
+import { Login } from './pages/Login';
+import { Track } from './pages/Track'; // A página que o ALVO vê
 
-// Wrapper to conditionally hide header on tracking pages
-const AppContent: React.FC = () => {
-  const location = useLocation();
-  const isTrackingPage = location.pathname.includes('/track/');
+export default function App() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) return null; // Ou um ícone de carregamento
 
   return (
-    <div className="min-h-screen bg-slate-100 font-sans text-slate-900">
-      {!isTrackingPage && <Header />}
-      <main className={!isTrackingPage ? "container mx-auto" : ""}>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/create" element={<CreateCase />} />
-          <Route path="/case/:id" element={<CaseDetail />} />
-          <Route path="/track/:id" element={<TrackingView />} />
-        </Routes>
-      </main>
-    </div>
-  );
-};
+    <HashRouter>
+      <Routes>
+        {/* ROTA PÚBLICA: O alvo precisa acessar isso SEM login */}
+        <Route path="/track/:id" element={<Track />} />
 
-function App() {
-  return (
-    <Router>
-      <AppContent />
-    </Router>
+        {/* ROTAS PROTEGIDAS: Só abrem se 'user' existir */}
+        <Route 
+          path="/" 
+          element={user ? <Dashboard /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/case/:id" 
+          element={user ? <CaseDetail /> : <Navigate to="/login" />} 
+        />
+        
+        {/* TELA DE LOGIN */}
+        <Route 
+          path="/login" 
+          element={!user ? <Login /> : <Navigate to="/" />} 
+        />
+      </Routes>
+    </HashRouter>
   );
 }
-
-export default App;
