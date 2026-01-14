@@ -3,11 +3,11 @@ import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './services/authService';
 
-// Suas páginas
-import { Dashboard } from './pages/Dashboard'; // Verifique se o nome é esse ou 'Home'
+// IMPORTAÇÕES DAS SUAS PÁGINAS
+import { Dashboard } from './pages/Dashboard'; 
 import { CaseDetail } from './pages/CaseDetail';
 import { Login } from './pages/Login';
-import { Track } from './pages/Track'; // A página que o ALVO vê
+import { TrackingView } from './pages/TrackingView'; // Nome corrigido aqui
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -21,15 +21,15 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  if (loading) return null; // Ou um ícone de carregamento
+  if (loading) return null;
 
   return (
     <HashRouter>
       <Routes>
-        {/* ROTA PÚBLICA: O alvo precisa acessar isso SEM login */}
-        <Route path="/track/:id" element={<Track />} />
+        {/* ROTA PÚBLICA (O alvo acede a esta página SEM precisar de login) */}
+        <Route path="/track/:id" element={<TrackingView />} />
 
-        {/* ROTAS PROTEGIDAS: Só abrem se 'user' existir */}
+        {/* ROTAS PROTEGIDAS (Só abrem se o utilizador estiver logado) */}
         <Route 
           path="/" 
           element={user ? <Dashboard /> : <Navigate to="/login" />} 
@@ -44,6 +44,9 @@ export default function App() {
           path="/login" 
           element={!user ? <Login /> : <Navigate to="/" />} 
         />
+
+        {/* Redirecionar qualquer rota desconhecida para a Home */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </HashRouter>
   );
