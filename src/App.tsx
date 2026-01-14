@@ -7,13 +7,15 @@ import { auth } from './services/authService';
 import { Dashboard } from './pages/Dashboard'; 
 import { CaseDetail } from './pages/CaseDetail';
 import { Login } from './pages/Login';
-import { TrackingView } from './pages/TrackingView'; // Nome corrigido aqui
+import { TrackingView } from './pages/TrackingView';
+import { CreateCase } from './pages/CreateCase'; // Adicionado a importação da página de criação
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Observador de estado de autenticação
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
@@ -26,23 +28,30 @@ export default function App() {
   return (
     <HashRouter>
       <Routes>
-        {/* ROTA PÚBLICA (O alvo acede a esta página SEM precisar de login) */}
+        {/* ROTA PÚBLICA: O alvo acessa esta página SEM login */}
         <Route path="/track/:id" element={<TrackingView />} />
 
-        {/* ROTAS PROTEGIDAS (Só abrem se o utilizador estiver logado) */}
+        {/* TELA DE LOGIN: Se já estiver logado, redireciona para o Dashboard */}
+        <Route 
+          path="/login" 
+          element={!user ? <Login /> : <Navigate to="/" />} 
+        />
+
+        {/* ROTAS PROTEGIDAS: Só abrem se o usuário estiver logado */}
         <Route 
           path="/" 
           element={user ? <Dashboard /> : <Navigate to="/login" />} 
         />
+        
         <Route 
           path="/case/:id" 
           element={user ? <CaseDetail /> : <Navigate to="/login" />} 
         />
-        
-        {/* TELA DE LOGIN */}
+
+        {/* ROTA DE CRIAÇÃO: Adicionada aqui para o botão "+" funcionar */}
         <Route 
-          path="/login" 
-          element={!user ? <Login /> : <Navigate to="/" />} 
+          path="/create" 
+          element={user ? <CreateCase /> : <Navigate to="/login" />} 
         />
 
         {/* Redirecionar qualquer rota desconhecida para a Home */}
