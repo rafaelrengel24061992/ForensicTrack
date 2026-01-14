@@ -15,7 +15,7 @@ let db: any = null;
 
 if (firebaseConfig.apiKey) {
   try {
-    const app = initializeApp(firebaseConfig);
+    export const app = initializeApp(firebaseConfig);
     db = getFirestore(app);
     console.log("Firebase conectado com sucesso via Vercel.");
   } catch (e) {
